@@ -1,0 +1,74 @@
+---
+
+ Preparing Yum For Latest PGSQL Installation
+- copy: src=CentOS-Base.repo dest=/etc/yum.repos.d/CentOS-Base.repo owner=root group=root mode=0644
+
+#- name: Configure Yum Repository if RedHat 6
+#  yum: name=http://yum.postgresql.org/9.4/redhat/rhel-6-x86_64/pgdg-redhat94-9.4-1.noarch.rpm state=present
+#  when: ansible_distribution == "RedHat" and ansible_distribution_major_version == "6"
+
+#- name: Configure Yum Repository if RedHat 7
+#  yum: name=http://yum.postgresql.org/9.4/redhat/rhel-7-x86_64/pgdg-redhat94-9.4-1.noarch.rpm state=present
+#  when: ansible_distribution == "RedHat" and ansible_distribution_major_version == "7"
+
+- name: Install PGSQL 9.4
+  yum: name=postgresql94-server state=present
+
+ 
+#--------------------------------
+# Step-3: Initialize the DB.
+#--------------------------------
+
+- shell: service postgresql-9.4 initdb
+
+- name: ensure Pgsql is running and starts on boot
+  service: name=postgresql-9.4 state=started enabled=true
+
+#---------------------------------
+# Step-4: 
+#---------------------------------
+
+
+- name: Install python-psycopg2 Required For Ansible
+  yum: name=python-psycopg2 state=present
+
+
+# Copying Postgres Configurations
+- copy: src=pg_hba.conf dest=/var/lib/pgsql/9.4/data/pg_hba.conf owner=postgres group=postgres mode=0600
+- copy: src=postgresql.conf dest=/var/lib/pgsql/9.4/data/postgresql.conf owner=postgres group=postgres mode=0600
+
+- shell: service postgresql-9.4 restart
+
+- name: Change  Default postgres User pass
+  sudo: yes
+  sudo_user: postgres
+  postgresql_user: login_user=postgres db=postgres name=postgres password=abc123 priv=ALL
+
+- name: Create zabbix database
+  sudo: yes
+  sudo_user: postgres
+  postgresql_db: name=zabbix encoding='UTF-8'
+
+- name: Create zabbix User and Assign Permission to zabbix DB.
+  sudo: yes
+  sudo_user: postgres
+  postgresql_user: db=zabbix name=zabbix password=zabbix1234 priv=ALL
+
+
+- shell: service postgresql-9.4 restart
+
+# Preparing Yum For Latest PGSQL Installation
+
+- copy: src=.bash_profile dest=/root/.bash_profile owner=root group=root mode=0644
+- shell: source ~/.bash_profile
+
+- shell: psql -U zabbix -d zabbix -f {{ zabbix_sqlfile }}/schema.sql
+- shell: psql -U zabbix -d zabbix -f {{ zabbix_sqlfile }}/images.sql
+- shell: psql -U zabbix -d zabbix -f {{ zabbix_sqlfile }}/data.sql
+
+
+
+# Task Description
+#------------------------------------------------------
+# Step-2: Install & Configure Mysql Secure Installation
+#------------------------------------------------------

@@ -1,0 +1,20 @@
+---
+- command: mysql -u root -pzabbix1234 -e 'CREATE DATABASE zabbix CHARACTER SET UTF8;'
+- command: mysql -u root -pzabbix1234 -e "GRANT ALL PRIVILEGES on zabbix.* to 'zabbix'@'localhost' IDENTIFIED BY 'zabbix1234';"
+- command: mysql -u root -pzabbix1234 -e 'FLUSH PRIVILEGES;'
+
+- name: Import Data from schema.sql
+  mysql_db: login_user=root login_password=zabbix1234 state=import name=zabbix target=/usr/share/doc/zabbix-server-mysql-2.2.9/create/schema.sql
+
+- name: Import Data from images.sql
+  mysql_db: login_user=root login_password=zabbix1234 state=import name=zabbix target=/usr/share/doc/zabbix-server-mysql-2.2.9/create/images.sql
+
+- name: Import Data from data.sql
+  mysql_db: login_user=root login_password=zabbix1234 state=import name=zabbix target=/usr/share/doc/zabbix-server-mysql-2.2.9/create/data.sql
+
+  notify: Start Zabbix
+
+# Task Description
+#---------------------------------------------------------------
+# Step-5: Create Zabbix Database and Import data to tables
+#---------------------------------------------------------------

@@ -1,0 +1,33 @@
+---
+- name: install zabbix Required Services
+  yum: pkg={{item}} state=latest
+  with_items:
+   - httpd
+   - httpd-devel
+   - php
+   - php-cli
+   - php-common
+   - php-devel
+   - php-pear
+   - php-gd
+   - php-mbstring
+   - php-xml
+   - net-snmp-devel 
+   - php-pgsql
+   - php-bcmath
+   - net-snmp-devel 
+   - e2fsprogs-devel
+   - libidn-devel 
+   - libXpm 
+   - php-xmlrpc 
+   - sharutils 
+   - php-xml
+
+  notify: Start Httpd
+
+
+# Task Description:
+#-----------------------------------------
+# Step-1: install zabbix Required Services
+#-----------------------------------------
+

@@ -1,0 +1,5 @@
+---
+
+password: zabbix1234
+zabbix_sqlfile: /usr/share/doc/zabbix-server-pgsql-2.2.9/create
+CentOS_Version: "{{ ansible_distribution_major_version }}"

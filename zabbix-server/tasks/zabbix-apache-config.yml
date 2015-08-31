@@ -1,0 +1,11 @@
+---
+- command: sed -i '/Riga/a php_value date.timezone Asia/Kolkata' /etc/httpd/conf.d/zabbix.conf
+  notify: Start Httpd
+  notify: Start Zabbix
+
+
+
+# Task Description
+#------------------------------------------
+# Step-4: Setup Zabbix Apache Configuration
+#------------------------------------------

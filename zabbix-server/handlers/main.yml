@@ -1,0 +1,6 @@
+---
+- name: Start Httpd
+  service: name=httpd state=started
+
+- name: Start Zabbix
+  service: name=zabbix-server state=started

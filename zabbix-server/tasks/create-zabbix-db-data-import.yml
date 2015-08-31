@@ -1,0 +1,24 @@
+---
+
+- name: Create Zabbix database
+  mysql_db: login_user=root login_password={{ password }} name=zabbix state=present
+
+- name: Create User zabbix with password with database privileges
+  mysql_user: login_user=root login_password={{ password }} name=zabbix password=zabbix1234 priv=*.*:ALL state=present
+
+- name: Import Data from schema.sql
+  mysql_db: login_user=root login_password={{ password }} state=import name=zabbix target={{ zabbix_sqlfile }}/schema.sql
+
+- name: Import Data from images.sql
+  mysql_db: login_user=root login_password={{ password }} state=import name=zabbix target={{ zabbix_sqlfile }}/images.sql
+
+- name: Import Data from data.sql
+  mysql_db: login_user=root login_password={{ password }} state=import name=zabbix target={{ zabbix_sqlfile }}/data.sql
+
+  notify: Start Mysqld
+  notify: Start Zabbix
+
+# Task Description
+#---------------------------------------------------------------
+# Step-5: Create Zabbix Database and Import data to tables
+#---------------------------------------------------------------

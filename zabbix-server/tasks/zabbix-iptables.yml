@@ -1,0 +1,15 @@
+---
+- name: Get iptables rules
+  shell: iptables -L
+  register: iptablesrules
+  always_run: yes
+ 
+- name: Add apache iptable rule
+  command: /sbin/iptables -I INPUT 1 -p tcp --dport 10051 -j ACCEPT -m comment --comment "zabbix"
+  when: iptablesrules.stdout.find("zabbix") == -1
+ 
+- name: save iptables
+  command: iptables-save
+ 
+- name: restart iptables
+  service: name=iptables state=started

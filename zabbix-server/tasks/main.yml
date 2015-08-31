@@ -1,0 +1,7 @@
+---
+- include: install-required-services.yml 
+- include: install-zabbix.yml
+- include: install-configure-PGSQL.yml
+- include: zabbix-apache-config.yml
+- include: zabbix-iptables.yml
+
